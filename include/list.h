@@ -5,14 +5,13 @@
 #ifndef CDATASTRUCTS_LIST_H
 #define CDATASTRUCTS_LIST_H
 #include <stddef.h>
+#include "common.h"
 
 typedef struct __DLNode {
     struct __DLNode *prev;
     struct __DLNode *next;
     void *data;
 } DLNode;
-
-void DLNode_init(DLNode *this, void *valueAddr, size_t elemSize);
 
 typedef struct {
     const size_t elemSize;
@@ -24,12 +23,12 @@ typedef struct {
 } list;
 
 
-void listInit(list* this, size_t elemSize, void (*freeFn)(void *));
+void listInit(list* this, size_t elemSize, FreeFunction freeFn);
 void listDestroy(list *this);
 void listPushFront(list *this, void *valueAddr);
 void listPopFront(list *this, void *valueAddr);
 void listPushBack(list *this, void *valueAddr);
 void listPopBack(list *this, void *valueAddr);
-void listPrint(list *this, void printFn(void *));
+void listPrint(list *this, PrintFunction printFn);
 
 #endif //CDATASTRUCTS_LIST_H

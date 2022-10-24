@@ -14,7 +14,7 @@ void DLNode_init(DLNode *this, void *valueAddr, const size_t elemSize) {
     memcpy(this->data, valueAddr, elemSize);
 }
 
-void listInit(list *this, size_t elemSize, void (*freeFn)(void *)) {
+void listInit(list *this, size_t elemSize, FreeFunction freeFn) {
     this->size = 0;
     this->head = NULL;
     this->tail = NULL;
@@ -26,7 +26,7 @@ void listDestroy(list *this) {
     DLNode *trash;
     while ((trash = this->head) != NULL) {
         this->head = trash->next;
-        if (this->freeFn != NULL)
+        if (trash->data != NULL && this->freeFn != NULL)
             this->freeFn(trash->data);
         free(trash);
     }
@@ -93,7 +93,7 @@ void listPopBack(list *this, void *valueAddr) {
     free(popNode);
 }
 
-void listPrint(list *this, void printFn(void *)) {
+void listPrint(list *this, PrintFunction printFn) {
     printf("[");
     for (DLNode *node = this->head; node != NULL; node = node->next) {
         printFn(node->data);

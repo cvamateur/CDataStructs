@@ -3,7 +3,7 @@
 //
 #include <stdio.h>
 #include "list.h"
-#include "literals.h"
+#include "common.h"
 
 
 static void PrintInt(void *vp) {
@@ -29,9 +29,9 @@ int main() {
 
     int ix = 3, iy = 4, iz = 5;
     listInit(&l, sizeof(int), NULL);
-    listPushBack(&l, PTR_INT(1));
-    listPushBack(&l, PTR_INT(2));
-    listPushBack(&l, PTR_INT(3));
+    listPushBack(&l, REF_INT(1));
+    listPushBack(&l, REF_INT(2));
+    listPushBack(&l, REF_INT(3));
     listPushBack(&l, &ix);
     listPushBack(&l, &iy);
     listPushBack(&l, &iz);
@@ -46,8 +46,8 @@ int main() {
 
     double dx = 3.3, dy = 4.4, dz = 5.5;
     listInit(&l, sizeof(double), NULL);
-    listPushFront(&l, PTR_DOUBLE(2.2));
-    listPushFront(&l, PTR_DOUBLE(1.1));
+    listPushFront(&l, REF_DOUBLE(2));
+    listPushFront(&l, REF_DOUBLE(1));
     listPushBack(&l, &dx);
     listPushBack(&l, &dy);
     listPushBack(&l, &dz);
@@ -57,19 +57,19 @@ int main() {
 
     const char* strs[] = {"Hello", "World!", "Generic C Programming"};
     listInit(&l, sizeof(char *), NULL);
-    listPushBack(&l, PTR_STRING("123"));
-    listPushBack(&l, PTR_STRING("abc"));
-    listPushBack(&l, PTR_STRING("DEF"));
-    listPushFront(&l, PTR_STRING(strs[0]));
-    listPushFront(&l, PTR_STRING(strs[1]));
-    listPushFront(&l, PTR_STRING(strs[2]));
+    listPushBack(&l, REF_STRING("123"));
+    listPushBack(&l, REF_STRING("abc"));
+    listPushBack(&l, REF_STRING("DEF"));
+    listPushFront(&l, &strs[0]);
+    listPushFront(&l, &strs[1]);
+    listPushFront(&l, &strs[2]);
     listPrint(&l, PrintString);  BREAK_LINE();
 
+
     char* buffer;
-    listPopFront(&l, &buffer); printf("Pop an string: \"%s\"\n", buffer);
-    free(buffer);
-    listPopBack(&l, &buffer); printf("Pop an string: \"%s\"\n", buffer);
-    free(buffer);
+    listPopFront(&l, &buffer); printf("FrontPop a string: \"%s\"\n", buffer);
+    listPopBack(&l, &buffer); printf("BackPop a string: \"%s\"\n", buffer);
+
 
     listDestroy(&l);
 }

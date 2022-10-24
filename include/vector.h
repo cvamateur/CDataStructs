@@ -4,12 +4,8 @@
 #ifndef CDATASTRUCTS_VECTOR_H
 #define CDATASTRUCTS_VECTOR_H
 #include <stddef.h>
+#include "common.h"
 
-
-typedef int (*CompareFunction)(const void* elemAddr1, const void* elemAddr2);
-typedef void (*PrintFunction)(const void* elemAddr);
-typedef void (*FreeFunction)(void * elemAddr);
-typedef void (*MapFunction)(void *elemAddr, void* auxData);
 
 typedef struct {
     const size_t elemSize;  // Element size in bytes
@@ -63,7 +59,7 @@ void vectorPrint(vector *this, PrintFunction printFn);
  * @param index Index of which value to return.
  * @return Address of the of the returned value.
  */
-inline void* vectorNth(vector* this, size_t index);
+void* vectorNth(vector* this, size_t index);
 
 /**
  * Insert value at index `index`.
@@ -77,7 +73,7 @@ void vectorDelete(vector *this, size_t index);
 
 void vectorReplace(vector *this, void *valueAddr, size_t index);
 
-inline void vectorSort(vector *this, CompareFunction cmpFn);
+void vectorSort(vector *this, CompareFunction cmpFn);
 
 long vectorSearch(const vector *this, const void *key, CompareFunction cmpFn, size_t startIdx, int isSorted);
 

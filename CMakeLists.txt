@@ -18,3 +18,6 @@ endmacro()
 
 add_test(vector)
 add_test(list)
+add_test(stack)
+add_test(queue)
+add_test(btree)
