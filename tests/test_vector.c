@@ -3,23 +3,9 @@
 //
 #include <stdio.h>
 #include "vector.h"
-#include "common.h"
-
-static void PrintInt(const void *vp) {
-    printf("%d", *(int*)vp);
-}
-
-static void PrintDouble(const void *vp) {
-    printf("%g", *(double*)vp);
-}
 
 static void PrintString(const void *vp) {
     printf("\"%s\"", *(char**) vp);
-}
-
-static void FreeString(void *vp) {
-    char* str = *(char**) vp;
-    free(str);
 }
 
 static int CompareString(const void *vp1, const void* vp2) {
@@ -28,45 +14,9 @@ static int CompareString(const void *vp1, const void* vp2) {
     return strcmp(str1, str2);
 }
 
-static void MapFnIncInt(void *vp1, void* auxData) {
-    *(int*) vp1 = *(int*) vp1 + *(int*) auxData;
-}
-
-static void MapFnIncDouble(void *vp1, void* auxData) {
-    *(double*) vp1 = *(double*) vp1 + *(double*) auxData;
-}
-
 
 int main() {
     vector v;
-
-    int ix = 3, iy = 4, iz = 5;
-    vectorInit(&v, sizeof(int), NULL, 0);
-    vectorPushBack(&v, REF_INT(1));
-    vectorPushBack(&v, REF_INT(2));
-    vectorPushBack(&v, &ix);
-    vectorPushBack(&v, &iy);
-    vectorPushBack(&v, &iz);
-    vectorPrint(&v, PrintInt);  BREAK_LINE();
-
-    vectorMap(&v, MapFnIncInt, REF_INT(3));
-    vectorPrint(&v, PrintInt);  BREAK_LINE();
-    vectorDestroy(&v);
-
-
-    double dx = 3.3, dy = 4.4, dz = 5.5;
-    vectorInit(&v, sizeof(double), NULL, 0);
-    vectorInsert(&v, REF_DOUBLE(1.1), 0);
-    vectorInsert(&v, REF_DOUBLE(2.2), 1);
-    vectorPushBack(&v, &dx);
-    vectorPushBack(&v, &dy);
-    vectorPushBack(&v, &dz);
-    vectorPrint(&v, PrintDouble); BREAK_LINE();
-
-    vectorMap(&v, MapFnIncDouble, REF_DOUBLE(3.0));
-    vectorPrint(&v, PrintDouble);  BREAK_LINE();
-    vectorDestroy(&v);
-
 
     const char* strs[] = {"Hello", "World!", "Generic C Programming"};
     vectorInit(&v, sizeof(char*), NULL, 0);
@@ -74,13 +24,12 @@ int main() {
     vectorPushBack(&v, &strs[1]);
     vectorPushBack(&v, &strs[2]);
     vectorInsert(&v, REF_STRING("123"), 0);
-    vectorInsert(&v, REF_STRING("abc"), 1);
     vectorInsert(&v, REF_STRING("DEF"), v.size);
-    vectorPrint(&v, PrintString);  BREAK_LINE();
+    vectorPrint(&v, PrintString);  STD_ENDL();
 
     vectorReplace(&v, REF_STRING("C++"), 2);
     vectorReplace(&v, REF_STRING("Python"), 0);
-    vectorPrint(&v, PrintString); BREAK_LINE();
+    vectorPrint(&v, PrintString); STD_ENDL();
 
     char* key = "Python";
     long foundIdx = vectorSearch(&v, &key, CompareString, 0, 0);
@@ -90,7 +39,7 @@ int main() {
         printf("No string `Python` in vector\n");
 
     vectorSort(&v, CompareString);
-    vectorPrint(&v, PrintString); BREAK_LINE();
+    vectorPrint(&v, PrintString); STD_ENDL();
 
     foundIdx = vectorSearch(&v, &key, CompareString, 0, 1);
     if (foundIdx != -1)
@@ -99,12 +48,12 @@ int main() {
         printf("No string `Python` in vector\n");
 
     vectorDelete(&v, 0);
-    vectorPrint(&v, PrintString); BREAK_LINE();
+    vectorPrint(&v, PrintString); STD_ENDL();
 
 
     char* buffer;
-    vectorPopBack(&v, &buffer); PrintString(&buffer); BREAK_LINE();
-    vectorPopBack(&v, &buffer); PrintString(&buffer); BREAK_LINE();
+    vectorPopBack(&v, &buffer); PrintString(&buffer); STD_ENDL();
+    vectorPopBack(&v, &buffer); PrintString(&buffer); STD_ENDL();
 
     vectorDestroy(&v);
 

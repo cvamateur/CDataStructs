@@ -108,16 +108,24 @@ void vectorSort(vector *this, CompareFunction cmpFn) {
 long vectorSearch(const vector *this, const void *key, CompareFunction cmpFn, size_t startIdx, int isSorted) {
     void *found;
     if (isSorted)
-        found = bsearch(key, this->data, this->size, this->elemSize, cmpFn);
+        found = bsearch(key,
+                        this->data + startIdx * this->elemSize,
+                        this->size,
+                        this->elemSize,
+                        cmpFn);
     else
-        found = lsearch(key, this->data, this->size, this->elemSize, cmpFn);
+        found = lsearch(key,
+                        this->data + startIdx * this->elemSize,
+                        this->size,
+                        this->elemSize,
+                        cmpFn);
     return (long) (found ? ((char *) found - (char *) this->data) / this->elemSize : -1);
 }
 
 void vectorMap(vector *this, MapFunction mapFn, void *auxData) {
     void *elemAddr;
     for (size_t i = 0; i < this->size; ++i) {
-        elemAddr = vectorNth(this, i);
+        elemAddr = (char *) this->data + i * this->elemSize;
         mapFn(elemAddr, auxData);
     }
 }

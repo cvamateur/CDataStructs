@@ -15,13 +15,14 @@ typedef enum {
     LEVEL_ORDER,
 } TraversalOrder;
 
-typedef struct __BTNode {
+typedef struct __BSTNode {
     void *data;
-    struct __BTNode *left;
-    struct __BTNode *right;
+    struct __BSTNode *left;
+    struct __BSTNode *right;
+    int height;
 } bnode;
 
-typedef struct __BTree {
+typedef struct __BSTree {
     bnode *root;
     size_t size;
     size_t elemSize;
@@ -33,7 +34,15 @@ typedef struct __BTree {
 void btreeInit(btree* this, size_t elemSize, CompareFunction cmpFn, FreeFunction freeFn);
 void btreeDestroy(btree *this);
 void btreeInsert(btree *this, void *valueAddr);
-void btreePrint(btree *this, PrintFunction printFn);
+void btreeDelete(btree *this, void *valueAddr);
+
+/**
+ * Return a pointer to the node if found or NULL otherwise.
+ */
+bnode *btreeFind(btree *this, void *valueAddr);
+
 void btreeMap(btree *this, TraversalOrder order, MapFunction mapFn, void *auxData);
+
+void btreePrint(btree *this, void (*printDataFn)(void *));
 
 #endif //CDATASTRUCTS_BTREE_H

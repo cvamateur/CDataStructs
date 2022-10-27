@@ -13,13 +13,13 @@ typedef struct __DLNode {
     void *data;
 } DLNode;
 
-typedef struct {
+typedef struct __DLList {
     const size_t elemSize;
     size_t size;
     DLNode *head;
     DLNode *tail;
 
-    void (*freeFn)(void *);
+    FreeFunction freeFn;
 } list;
 
 
@@ -29,6 +29,11 @@ void listPushFront(list *this, void *valueAddr);
 void listPopFront(list *this, void *valueAddr);
 void listPushBack(list *this, void *valueAddr);
 void listPopBack(list *this, void *valueAddr);
-void listPrint(list *this, PrintFunction printFn);
+void listMap(list *this, MapFunction mapFn, void *auxData);
+void listMapReverse(list *this, MapFunction mapFn, void *auxData);
+void listReverse(list *this);
+void listSort(list *this, CompareFunction cmpFn);
+void listSortedMerge(list *this, list *other, CompareFunction cmpFn);
+
 
 #endif //CDATASTRUCTS_LIST_H

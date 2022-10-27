@@ -9,14 +9,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-static char tmp_char;
-static short tmp_short;
-static int tmp_int;
-static long tmp_long;
-static long long tmp_longlong;
-static float tmp_float;
-static double tmp_double;
-static char *tmp_string;
+extern char tmp_char;
+extern short tmp_short;
+extern int tmp_int;
+extern long tmp_long;
+extern long long tmp_longlong;
+extern float tmp_float;
+extern double tmp_double;
+extern char *tmp_string;
 
 #define REF_CHAR(X)         ((tmp_char = (char)(X)), &tmp_char)
 #define REF_SHORT(X)        ((tmp_short = (short)(X)), &tmp_short)
@@ -26,11 +26,20 @@ static char *tmp_string;
 #define REF_FLOAT(X)        ((tmp_float = (float)(X)), &tmp_float)
 #define REF_DOUBLE(X)       ((tmp_double = (double)(X)), &tmp_double)
 #define REF_STRING(X)       ((tmp_string = (char *)(X)), &tmp_string)
-#define BREAK_LINE()        (printf("\n"))
 
-typedef int (*CompareFunction)(const void* elemAddr1, const void* elemAddr2);
-typedef void (*PrintFunction)(const void* elemAddr);
-typedef void (*FreeFunction)(void * elemAddr);
-typedef void (*MapFunction)(void *elemAddr, void* auxData);
+#define STD_ENDL()        (printf("\n"))
+
+
+typedef int (*CompareFunction)(const void *elemAddr1, const void *elemAddr2);
+typedef void (*PrintFunction)(const void *elemAddr);
+typedef void (*FreeFunction)(void *elemAddr);
+typedef void (*MapFunction)(void *elemAddr, void *auxData);
+
+#define swap(a, b)          (__swap(&(a), &(b), sizeof(a)))
+extern void __swap(void *a, void *b, const size_t elemSize);
+
+#define MAX(a, b)           ((a) >= (b) ? (a) : (b))
+#define MIN(a, b)           ((a) <= (b) ? (a) : (b))
+
 
 #endif //CDATASTRUCTS_COMMON_H
