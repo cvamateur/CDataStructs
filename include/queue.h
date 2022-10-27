@@ -13,8 +13,8 @@ typedef     list    queue;
 #define queueDestroy(q)                     listDestroy(&(q))
 #define queuePush(q, vaddr)                 listPushBack(&(q), vaddr)
 #define queuePop(q, vaddr)                  listPopFront(&(q), vaddr)
-#define queueEmpty(q)                       (q.size == 0)
-#define queueSize(q)                        (q.size)
+#define queueEmpty(q)                       ((q).size == 0)
+#define queueSize(q)                        ((q).size)
 
 
 #endif //CDATASTRUCTS_QUEUE_H

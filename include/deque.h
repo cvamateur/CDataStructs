@@ -14,8 +14,8 @@ typedef     list    deque;
 #define dequePushFront(dq, vaddr)           listPushFront(&(dq), vaddr)
 #define dequePopBack(dq, vaddr)             listPopBack(&(dq), vaddr)
 #define dequePopFront(dq, vaddr)            listPopFront(&(dq), vaddr)
-#define dequeEmpty(dq)                      (dq.size == 0)
-#define dequeSize(dq)                       (dq.size)
+#define dequeEmpty(dq)                      ((dq).size == 0)
+#define dequeSize(dq)                       ((dq).size)
 
 
 #endif //CDATASTRUCTS_DEQUE_H

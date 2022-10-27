@@ -14,7 +14,7 @@ typedef  vector  stack;
 #define stackDestroy(s)                             vectorDestroy(&(s))
 #define stackPush(s, vaddr)                         vectorPushBack(&(s), vaddr)
 #define stackPop(s, vaddr)                          vectorPopBack(&(s), vaddr)
-#define stackEmpty(s)                               (s.size == 0)
+#define stackEmpty(s)                               ((s).size == 0)
 
 
 #endif //CDATASTRUCTS_STACK_H
