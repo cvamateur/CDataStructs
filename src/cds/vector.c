@@ -14,7 +14,11 @@ static inline void vectorAutoGrow(vector *this) {
     assert(this->data != NULL);
 }
 
-void *lsearch(const void *key, const void *base, const size_t nmemb, const size_t elemSize, CompareFunction cmpFn) {
+static void *lsearch(const void *key,
+                     const void *base,
+                     const size_t nmemb,
+                     const size_t elemSize,
+                     CompareFunction cmpFn) {
     void *elemAddr;
     for (size_t i = 0; i < nmemb; ++i) {
         elemAddr = (char *) base + i * elemSize;

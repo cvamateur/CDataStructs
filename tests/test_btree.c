@@ -43,7 +43,7 @@ int main() {
 
     // find value
     int aInt = 4;
-    printf("\n\nIf %d in the tree?\n", aInt);
+    printf("\n\nIf %d 在树中?\n", aInt);
     bnode *node = btreeFind(&tree, &aInt);
     if (node != NULL)
         printf("Yes, value %d has found\n", aInt);

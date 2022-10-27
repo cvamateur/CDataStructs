@@ -34,7 +34,7 @@ typedef struct __BSTree {
 void btreeInit(btree* this, size_t elemSize, CompareFunction cmpFn, FreeFunction freeFn);
 void btreeDestroy(btree *this);
 void btreeInsert(btree *this, void *valueAddr);
-void btreeDelete(btree *this, void *valueAddr);
+int btreeDelete(btree *this, void *valueAddr);
 
 /**
  * Return a pointer to the node if found or NULL otherwise.

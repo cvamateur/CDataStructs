@@ -81,13 +81,13 @@ static void maintain(bnode **nodeRef) {
             if (SKEW((*nodeRef)->right) > 0)
                 rightRotate(&(*nodeRef)->right);
             leftRotate(nodeRef);
-            break;
+            return;
         }
         case 2: {
             if (SKEW((*nodeRef)->left) < 0)
                 leftRotate(&(*nodeRef)->left);
             rightRotate(nodeRef);
-            break;
+            return;
         }
     }
     update_property(*nodeRef);
@@ -200,10 +200,12 @@ void btreeInsert(btree *this, void *valueAddr) {
     ++this->size;
 }
 
-void btreeDelete(btree *this, void *valueAddr) {
+int btreeDelete(btree *this, void *valueAddr) {
     if (this->root == NULL) return;
-    bnode_delete_recursive(&this->root, valueAddr, this->cmpFn, this->freeFn);
-    --this->size;
+    int deleted = bnode_delete_recursive(&this->root, valueAddr, this->cmpFn, this->freeFn);
+    if (deleted)
+        --this->size;
+    return deleted;
 }
 
 static inline void btreePreOrder(btree *this, MapFunction mapFn, void *auxData) {
