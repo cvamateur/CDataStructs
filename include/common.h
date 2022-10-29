@@ -35,7 +35,8 @@ typedef void (*PrintFunction)(const void *elemAddr);
 typedef void (*FreeFunction)(void *elemAddr);
 typedef void (*MapFunction)(void *elemAddr, void *auxData);
 
-#define swap(a, b)          (__swap(&(a), &(b), sizeof(a)))
+#define swap(a, b)              (__swap(&(a), &(b), sizeof(a)))
+#define memswap(a, b, s)        (__swap(a, b, s))
 extern void __swap(void *a, void *b, const size_t elemSize);
 
 #define MAX(a, b)           ((a) >= (b) ? (a) : (b))

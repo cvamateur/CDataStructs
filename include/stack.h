@@ -9,8 +9,8 @@
 typedef  vector  stack;
 
 
-#define stackInit(s, elemSize, initSize, freeFn)    vectorInit(&(s), elemSize, freeFn, initSize)
-#define stackInitEmpty(s, elemSize, freeFn)         vectorInit(&(s), elemSize, freeFn, 0)
+#define stackInit(s, elemSize, initSize, freeFn)    vectorInit(&(s), elemSize, initSize, freeFn)
+#define stackInitEmpty(s, elemSize, freeFn)         vectorInit(&(s), elemSize, 0, freeFn)
 #define stackDestroy(s)                             vectorDestroy(&(s))
 #define stackPush(s, vaddr)                         vectorPushBack(&(s), vaddr)
 #define stackPop(s, vaddr)                          vectorPopBack(&(s), vaddr)

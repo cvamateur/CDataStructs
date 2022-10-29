@@ -28,12 +28,12 @@ static void *lsearch(const void *key,
     return NULL;
 }
 
-void vectorInit(vector *this, size_t elemSize, FreeFunction freeFn, size_t initialSize) {
+void vectorInit(vector *this, size_t elemSize, size_t size, FreeFunction freeFn) {
     *(size_t *) &this->elemSize = elemSize;
-    this->capacity = initialSize;
+    this->capacity = size;
     this->size = 0;
     this->freeFn = freeFn;
-    this->data = (initialSize == 0 ? NULL : malloc(initialSize * elemSize));
+    this->data = (size == 0 ? NULL : malloc(size * elemSize));
 }
 
 void vectorDestroy(vector *this) {

@@ -19,7 +19,7 @@ int main() {
     vector v;
 
     const char* strs[] = {"Hello", "World!", "Generic C Programming"};
-    vectorInit(&v, sizeof(char*), NULL, 0);
+    vectorInit(&v, sizeof(char*), 0, NULL);
     vectorPushBack(&v, &strs[0]);
     vectorPushBack(&v, &strs[1]);
     vectorPushBack(&v, &strs[2]);

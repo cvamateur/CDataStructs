@@ -201,7 +201,7 @@ void btreeInsert(btree *this, void *valueAddr) {
 }
 
 int btreeDelete(btree *this, void *valueAddr) {
-    if (this->root == NULL) return;
+    if (this->root == NULL) return 0;
     int deleted = bnode_delete_recursive(&this->root, valueAddr, this->cmpFn, this->freeFn);
     if (deleted)
         --this->size;

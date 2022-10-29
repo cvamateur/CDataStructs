@@ -7,7 +7,7 @@
 #include "common.h"
 
 
-typedef struct {
+typedef struct __Vector {
     const size_t elemSize;  // Element size in bytes
     size_t capacity;        // Allocated size
     size_t size;            // Logical size
@@ -22,7 +22,7 @@ typedef struct {
  * @param freeFn Function that free element.
  * @param elemSize Number of bytes for each element.
  */
-void vectorInit(vector* this, size_t elemSize, FreeFunction freeFn, size_t initialSize);
+void vectorInit(vector* this, size_t elemSize, size_t size, FreeFunction freeFn);
 
 /**
  * Destroy a vector, free all resources and set it to empty.
