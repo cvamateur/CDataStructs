@@ -84,25 +84,24 @@ void heapqPop(heapq *this, void *valueAddr) {
     void *pLast = vectorNth(this->container, this->container->size - 1);
     memswap(pFirst, pLast, this->container->elemSize);
     vectorPopBack(this->container, valueAddr);
-    heapify_down(this->container->data, this->container->size, this->container->elemSize, 0, this->cmpFn);
-}
-
-void heapqPushPop(heapq *this, void *iValueAddr, void *oValueAddr) {
-    assert(!flag_fixed_heap || this->container->size < this->container->capacity);
-    if (this->cmpFn(iValueAddr, heapqTop(this)))
-        memcpy(oValueAddr, iValueAddr, this->container->elemSize);
-    else {
-        memcpy(oValueAddr, heapqTop(this), this->container->elemSize);
-        memcpy(heapqTop(this), iValueAddr, this->container->elemSize);
-        heapify_down(this->container->data, this->container->size, this->container->elemSize, 0, this->cmpFn);
-    }
+    heapify_down(this->container->data, this->container->size, this->container->elemSize,
+                 0, this->cmpFn);
 }
 
 void heapqPopPush(heapq *this, void *iValueAddr, void *oValueAddr) {
     assert(this->container->size > 0);
-    memcpy(oValueAddr, heapqTop(this), this->container->elemSize);
-    memcpy(heapqTop(this), iValueAddr, this->container->elemSize);
-    heapify_down(this->container->data, this->container->size, this->container->elemSize, 0, this->cmpFn);
+    memcpy(oValueAddr, this->container->data, this->container->elemSize);
+    memcpy(this->container->data, iValueAddr, this->container->elemSize);
+    heapify_down(this->container->data, this->container->size, this->container->elemSize,
+                 0, this->cmpFn);
+}
+
+void heapqPushPop(heapq *this, void *iValueAddr, void *oValueAddr) {
+    assert(!flag_fixed_heap || this->container->size < this->container->capacity);
+    if (this->cmpFn(iValueAddr, this->container->data))
+        memcpy(oValueAddr, iValueAddr, this->container->elemSize);
+    else
+        heapqPopPush(this, iValueAddr, oValueAddr);
 }
 
 void heapqMap(heapq *this, MapFunction mapFn, void *auxData) {

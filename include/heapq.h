@@ -23,11 +23,9 @@ int heapqEmpty(heapq *this);
 void* heapqTop(heapq *this);
 void heapqPush(heapq* this, void *valueAddr);
 void heapqPop(heapq* this, void *valueAddr);
-void heapqPushPop(heapq *this, void *iValueAddr, void *oValueAddr);
 void heapqPopPush(heapq *this, void *iValueAddr, void *oValueAddr);
-
+void heapqPushPop(heapq *this, void *iValueAddr, void *oValueAddr);
 void heapqMap(heapq *this, MapFunction mapFn, void *auxData);
-
 
 void heapify(void *data, size_t size, size_t elemSize, HeapCompareFunc cmpFn);
 void heapSort(void *data, size_t size, size_t elemSize, HeapCompareFunc cmpFn);

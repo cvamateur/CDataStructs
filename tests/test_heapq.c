@@ -13,10 +13,6 @@ static void PrintInt(void *data, void* delimiter) {
     printf("%d%s", *(int*) data, (char*) delimiter);
 }
 
-static int DoubleLess(void *vp1, void *vp2) {
-    return *(double*) vp1 < *(double*) vp2;
-}
-
 int main() {
     heapq hq;
     int topInt;
@@ -43,7 +39,6 @@ int main() {
         printf("size=%zu; pushValue=%d, popValue=%d, heap=", heapqSize(&hq), arr[i], topInt);
         heapqMap(&hq, PrintInt, " "); STD_ENDL();
     }
-
     printf("Heap Pop Push:\n");
     for (int i = 7; i < 10; ++i) {
         heapqPopPush(&hq, &arr[i], &topInt);
@@ -52,7 +47,6 @@ int main() {
     }
 
     heapqDestroy(&hq);
-
 
     printf("Inplace turn arr into heap:\n");
     heapify(arr, 10, sizeof(int), IntLess);
