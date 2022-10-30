@@ -42,5 +42,9 @@ extern void __swap(void *a, void *b, const size_t elemSize);
 #define MAX(a, b)           ((a) >= (b) ? (a) : (b))
 #define MIN(a, b)           ((a) <= (b) ? (a) : (b))
 
+size_t rand64(void);
+size_t randint(size_t a, size_t b);
+double randfloat(double a, double b);
+
 
 #endif //CDATASTRUCTS_COMMON_H
