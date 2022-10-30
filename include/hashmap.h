@@ -14,6 +14,7 @@
 #define PRIME_NUM       ((size_t) (1 << 31) - 1)
 
 typedef size_t (*HashFunction)(const void *);
+
 typedef int (*KeyEqualFunction)(const void *, const void *);
 
 typedef struct __Pair {
@@ -23,7 +24,7 @@ typedef struct __Pair {
 
 typedef struct __HashNode {
     pair *p_item;
-    struct __HashNode* next;
+    struct __HashNode *next;
 } hashNode;
 
 typedef struct __UnorderedMap {
@@ -46,8 +47,11 @@ void hashmapInit(hashmap *this, size_t keySize, size_t valueSize,
 void hashmapDestroy(hashmap *this);
 void hashmapSet(hashmap *this, void *keyAddr, void *valueAddr);
 void hashmapGet(hashmap *this, void *keyAddr, void *outputAddr, void *defaultValue);
+void hashmapPop(hashmap *this, void *keyAddr, void *outputAddr, void *defaultValue);
 
-size_t hashInt(const void* keyAddr);
-size_t hashString(const void* keyAddr);
+size_t hashInt(const void *keyAddr);
+size_t hashString(const void *keyAddr);
+int IntEqual(const void *vp1, const void *vp2);
+int StringEqual(const void *vp1, const void *vp2);
 
 #endif //CDATASTRUCTS_HASHMAP_H

@@ -133,6 +133,32 @@ void hashmapGet(hashmap *this, void *keyAddr, void *outputAddr, void *defaultVal
     memcpy(outputAddr, defaultValue, this->valueSize);
 }
 
+void hashmapPop(hashmap *this, void *keyAddr, void *outputAddr, void *defaultValue) {
+    if (this->data != NULL) {
+        size_t hashCode = HASH(this, keyAddr);
+
+        hashNode **nodeRef = &this->data[hashCode];
+        while (*nodeRef != NULL) {
+            pair *item = (*nodeRef)->p_item;
+            if (this->keyEqual(keyAddr, item->p_key)) {
+                memcpy(outputAddr, item->p_value, this->valueSize);
+                *nodeRef = (*nodeRef)->next;
+                if (this->freeKey != NULL)
+                    this->freeKey(item->p_key);
+                if (this->freeValue != NULL)
+                    this->freeValue(item->p_value);
+                free(item->p_key);
+                free(item->p_value);
+                free(item);
+                return;
+            }
+            nodeRef = &(*nodeRef)->next;
+        }
+    }
+    memcpy(outputAddr, defaultValue, this->valueSize);
+}
+
+
 size_t hashInt(const void* keyAddr) {
     return (size_t) *(int*)keyAddr;
 }
@@ -148,4 +174,14 @@ size_t  hashString(const void* keyAddr) {
         r += (size_t) key[i];
     }
     return r;
+}
+
+int IntEqual(const void *vp1, const void *vp2) {
+    return *(int *) vp1 == *(int *) vp2;
+}
+
+int StringEqual(const void *vp1, const void *vp2) {
+    char *key = *(char **) vp1;
+    char *check = *(char **) vp2;
+    return (int) strcmp(key, check) == 0;
 }

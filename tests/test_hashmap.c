@@ -3,15 +3,7 @@
 //
 #include "hashmap.h"
 
-static int IntEqual(const void *vp1, const void *vp2) {
-    return *(int*) vp1 == *(int*) vp2;
-}
 
-static int StringEqual(const void *vp1, const void *vp2) {
-    char *key = *(char**) vp1;
-    char *check = *(char**) vp2;
-    return (int) strcmp(key, check) == 0;
-}
 
 int main() {
 
@@ -31,6 +23,14 @@ int main() {
         hashmapGet(&map, &keys[i], &intValue, REF_INT(0));
         printf("Get value %s=%d\n", keys[i], intValue);
     }
+
+    int popValue;
+    char *popKeys[] = {"10", "20", "10", "40"};
+    for (int i = 0; i < 4; ++i) {
+        hashmapPop(&map, &popKeys[i], &popValue, REF_INT(0));
+        printf("Pop value %s=%d\n", popKeys[i], popValue);
+    }
+
     hashmapDestroy(&map);;
 
     return 0;
