@@ -9,7 +9,7 @@
 #define HASH(map, keyAddr)  ((map)->_a * (map)->hash(keyAddr) % PRIME_NUM % (map)->capacity)
 
 
-static inline void hashNodeInit(hashNode *this, void *keyAddr, size_t keySize, void *valueAddr, size_t valueSize) {
+static inline void hashNodeInit(hashmapNode *this, void *keyAddr, size_t keySize, void *valueAddr, size_t valueSize) {
     this->p_item = malloc(sizeof(pair));
     assert(this->p_item != NULL);
     this->p_item->p_key = malloc(sizeof(keySize));
@@ -41,12 +41,12 @@ static inline void hashMapAutoGrow(hashmap *this) {
         this->size < (size_t) (FILL_RATIO * (double) this->capacity))
         return;
     this->capacity *= 2;
-    hashNode **newData = malloc(this->capacity * sizeof(hashNode*));
+    hashmapNode **newData = malloc(this->capacity * sizeof(hashmapNode*));
     assert(newData != NULL);
-    memset(newData, 0, this->capacity * sizeof(hashNode*));
+    memset(newData, 0, this->capacity * sizeof(hashmapNode*));
     this->_a = randint(1, PRIME_NUM - 1);
 
-    hashNode *item = NULL;
+    hashmapNode *item = NULL;
     for (int i = 0; i < this->capacity / 2; ++i) {
         while (this->data[i] != NULL) {
             size_t hashCode = HASH(this, this->data[i]->p_item->p_key);
@@ -61,7 +61,7 @@ static inline void hashMapAutoGrow(hashmap *this) {
 }
 
 void hashmapDestroy(hashmap *this) {
-    hashNode *node, *trash;
+    hashmapNode *node, *trash;
     for (size_t i = 0; i < this->size; ++i) {
         node = this->data[i];
         while (node != NULL) {
@@ -82,19 +82,19 @@ void hashmapDestroy(hashmap *this) {
 
 void hashmapSet(hashmap *this, void *keyAddr, void *valueAddr) {
     if (this->data == NULL) {
-        this->data = malloc(INITIAL_SIZE * sizeof(hashNode *));
-        memset(this->data, 0, INITIAL_SIZE * sizeof(hashNode *));
+        this->data = malloc(INITIAL_SIZE * sizeof(hashmapNode *));
+        memset(this->data, 0, INITIAL_SIZE * sizeof(hashmapNode *));
     }
 
     size_t hashCode = HASH(this, keyAddr);
     if (this->data[hashCode] == NULL) {
-        hashNode *newNode = malloc(sizeof(hashNode));
+        hashmapNode *newNode = malloc(sizeof(hashmapNode));
         assert(newNode != NULL);
         hashNodeInit(newNode, keyAddr, this->keySize, valueAddr, this->valueSize);
         newNode->next = this->data[hashCode];
         this->data[hashCode] = newNode;
     } else {
-        hashNode *item = this->data[hashCode];
+        hashmapNode *item = this->data[hashCode];
         while (item != NULL) {
             if (this->keyEqual(keyAddr, item->p_item->p_key)) {
                 if (this->freeValue != NULL)
@@ -105,7 +105,7 @@ void hashmapSet(hashmap *this, void *keyAddr, void *valueAddr) {
             item = item->next;
         }
         if (item == NULL) {
-            hashNode *newNode = malloc(sizeof(hashNode));
+            hashmapNode *newNode = malloc(sizeof(hashmapNode));
             assert(newNode != NULL);
             hashNodeInit(newNode,  keyAddr, this->keySize, valueAddr, this->valueSize);
             newNode->next = this->data[hashCode];
@@ -120,7 +120,7 @@ void hashmapGet(hashmap *this, void *keyAddr, void *outputAddr, void *defaultVal
     if (this->data != NULL) {
         size_t hashCode = HASH(this, keyAddr);
 
-        hashNode *found = this->data[hashCode];
+        hashmapNode *found = this->data[hashCode];
         while (found != NULL) {
             pair *item = found->p_item;
             if (this->keyEqual(keyAddr, item->p_key)) {
@@ -137,7 +137,7 @@ void hashmapPop(hashmap *this, void *keyAddr, void *outputAddr, void *defaultVal
     if (this->data != NULL) {
         size_t hashCode = HASH(this, keyAddr);
 
-        hashNode **nodeRef = &this->data[hashCode];
+        hashmapNode **nodeRef = &this->data[hashCode];
         while (*nodeRef != NULL) {
             pair *item = (*nodeRef)->p_item;
             if (this->keyEqual(keyAddr, item->p_key)) {

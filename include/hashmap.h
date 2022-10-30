@@ -25,10 +25,10 @@ typedef struct __Pair {
 typedef struct __HashNode {
     pair *p_item;
     struct __HashNode *next;
-} hashNode;
+} hashmapNode;
 
 typedef struct __UnorderedMap {
-    hashNode **data;
+    hashmapNode **data;
     size_t capacity;
     size_t size;
     size_t keySize;
