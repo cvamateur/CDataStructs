@@ -4,9 +4,12 @@
 #include <stdio.h>
 #include "heapq.h"
 
-
 static int IntLess(void *vp1, void *vp2) {
     return *(int *) vp1 < *(int *) vp2;
+}
+
+static int IntGreater(void *vp1, void *vp2) {
+    return *(int*) vp1 > *(int *) vp2;
 }
 
 static void PrintInt(void *data, void* delimiter) {
@@ -18,12 +21,12 @@ int main() {
     int topInt;
 
     int arr[10] = {6, 5, 2, 4, 3, 8, 9, 10, 7, 1};
-    heapqInit(&hq, 0, sizeof(int), IntLess, NULL);
+    heapqInit(&hq, 0, sizeof(int), IntGreater, NULL);
 
     printf("Heap Push:\n");
     for (int i = 0; i < 10; ++i) {
         heapqPush(&hq, &arr[i]);
-        printf("size=%zu; heap=", heapqSize(&hq));
+        printf("size=%zu; pushValue=%d; heap=", heapqSize(&hq), arr[i]);
         heapqMap(&hq, PrintInt, " "); STD_ENDL();
     }
     printf("Heap Pop:\n");

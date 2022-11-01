@@ -14,20 +14,6 @@ static inline void vectorAutoGrow(vector *this) {
     assert(this->data != NULL);
 }
 
-static void *lsearch(const void *key,
-                     const void *base,
-                     const size_t nmemb,
-                     const size_t elemSize,
-                     CompareFunction cmpFn) {
-    void *elemAddr;
-    for (size_t i = 0; i < nmemb; ++i) {
-        elemAddr = (char *) base + i * elemSize;
-        if (cmpFn(key, elemAddr) == 0)
-            return elemAddr;
-    }
-    return NULL;
-}
-
 void vectorInit(vector *this, size_t elemSize, size_t size, FreeFunction freeFn) {
     *(size_t *) &this->elemSize = elemSize;
     this->capacity = size;
@@ -107,6 +93,20 @@ void vectorReplace(vector *this, void *valueAddr, size_t index) {
 
 void vectorSort(vector *this, CompareFunction cmpFn) {
     qsort(this->data, this->size, this->elemSize, cmpFn);
+}
+
+static void *lsearch(const void *key,
+                     const void *base,
+                     const size_t nmemb,
+                     const size_t elemSize,
+                     CompareFunction cmpFn) {
+    void *elemAddr;
+    for (size_t i = 0; i < nmemb; ++i) {
+        elemAddr = (char *) base + i * elemSize;
+        if (cmpFn(key, elemAddr) == 0)
+            return elemAddr;
+    }
+    return NULL;
 }
 
 long vectorSearch(const vector *this, const void *key, CompareFunction cmpFn, size_t startIdx, int isSorted) {

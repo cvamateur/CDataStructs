@@ -32,5 +32,5 @@ static void quickSortRecursive(void *data, size_t elemSize, ssize_t left, ssize_
 
 void quickSort(void *data, size_t size, size_t elemSize, CompareFunction cmpFn) {
     if (size <= 1) return;
-    quickSortRecursive(data, elemSize, 0, size - 1, cmpFn);
+    quickSortRecursive(data, elemSize, 0, (ssize_t) size - 1, cmpFn);
 }

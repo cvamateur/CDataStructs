@@ -4,7 +4,6 @@
 #include "hashmap.h"
 
 
-
 int main() {
 
     hashmap map;
@@ -25,8 +24,8 @@ int main() {
     }
 
     int popValue;
-    char *popKeys[] = {"10", "20", "10", "40"};
-    for (int i = 0; i < 4; ++i) {
+    char *popKeys[] = {"10", "20", "40", "10", "20", "40", };
+    for (int i = 0; i < 6; ++i) {
         hashmapPop(&map, &popKeys[i], &popValue, REF_INT(0));
         printf("Pop value %s=%d\n", popKeys[i], popValue);
     }

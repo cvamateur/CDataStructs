@@ -50,6 +50,14 @@ int main() {
     else
         printf("Not, value %d has not found\n", aInt);
 
+
+    // Build many
+    btreeDestroy(&tree);
+    btreeInit(&tree, sizeof(int), CompareInts, NULL);
+    int arrs[] = {1, 2, 3, 4, 5, 6};
+    btreeBuild(tree, &arrs[0], &arrs[1], &arrs[2], &arrs[3], &arrs[4], &arrs[5]);
+    btreePrint(&tree, printData);
+
     btreeDestroy(&tree);
     return 0;
 }

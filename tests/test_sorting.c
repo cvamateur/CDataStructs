@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include "sort.h"
 
-
 static int IntLess(const void *vp1, const void *vp2) {
     return *(int*) vp1 <= *(int*) vp2;
 }
@@ -15,8 +14,6 @@ static void PrintArray(int *arr, int size) {
     }
     printf("\n");
 }
-
-
 
 int main() {
     int arr[10] = {4, 2, 3, 1, 7, 6, 9, 0, 8, 5};

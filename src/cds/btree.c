@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdarg.h>
 #include "btree.h"
 #include "stack.h"
 #include "queue.h"
@@ -305,4 +306,16 @@ bnode *btreeFind(btree *this, void *valueAddr) {
 void btreePrint(btree *this, void (*printDataFn)(void *)) {
     printf(".\n");
     bnode_print(this->root, "", 0, printDataFn);
+}
+
+void _btreeBuild(btree *this, size_t num, ...) {
+    va_list ap;
+    void *valueAddr;
+
+    va_start(ap, num);
+    for (size_t i = 0;  i < num; ++i) {
+        valueAddr = va_arg(ap, void*);
+        btreeInsert(this, valueAddr);
+    }
+    va_end(ap);
 }

@@ -22,7 +22,6 @@ typedef struct __DLList {
     FreeFunction freeFn;
 } list;
 
-
 void listInit(list* this, size_t elemSize, FreeFunction freeFn);
 void listDestroy(list *this);
 void listPushFront(list *this, void *valueAddr);
@@ -34,6 +33,5 @@ void listMapReverse(list *this, MapFunction mapFn, void *auxData);
 void listReverse(list *this);
 void listSort(list *this, CompareFunction cmpFn);
 void listSortedMerge(list *this, list *other, CompareFunction cmpFn);
-
 
 #endif //CDATASTRUCTS_LIST_H

@@ -40,7 +40,6 @@ static void heapify_up(void *data, size_t size, size_t elemSize, size_t cIdx, He
     size_t pIdx = PARENT(cIdx);
     void *pData = (char *) data + pIdx * elemSize;
     void *cData = (char *) data + cIdx * elemSize;
-    char *buffer[elemSize];
     if (cmpFn(cData, pData)) {
         memswap(cData, pData, elemSize);
         heapify_up(data, size, elemSize, pIdx, cmpFn);
@@ -114,7 +113,7 @@ void heapqMap(heapq *this, MapFunction mapFn, void *auxData) {
 
 void heapify(void *data, size_t size, size_t elemSize, HeapCompareFunc cmpFn) {
     if (size < 2) return;
-    for (long long i = (long long) size / 2; i >= 0; --i)
+    for (ssize_t i = (ssize_t) size / 2; i >= 0; --i)
         heapify_down(data, size, elemSize, i, cmpFn);
 }
 
