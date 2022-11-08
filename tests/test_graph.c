@@ -22,7 +22,6 @@ int main() {
     graphAddEdge(&g, 1, 5, 0.5);
 
     graphPrepareMatrix(&g);
-
     graphPrint(&g);
 
     graphDestroy(&g);

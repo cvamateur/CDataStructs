@@ -17,6 +17,7 @@ extern long long tmp_longlong;
 extern float tmp_float;
 extern double tmp_double;
 extern char *tmp_string;
+extern void *tmp_nan;
 
 #define REF_CHAR(X)         ((tmp_char = (char)(X)), &tmp_char)
 #define REF_SHORT(X)        ((tmp_short = (short)(X)), &tmp_short)
@@ -26,6 +27,7 @@ extern char *tmp_string;
 #define REF_FLOAT(X)        ((tmp_float = (float)(X)), &tmp_float)
 #define REF_DOUBLE(X)       ((tmp_double = (double)(X)), &tmp_double)
 #define REF_STRING(X)       ((tmp_string = (char *)(X)), &tmp_string)
+#define REF_NAN(X)          ((tmp_nan = (void *)(X), &tmp_nan)
 
 #define STD_ENDL()        (printf("\n"))
 

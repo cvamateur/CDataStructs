@@ -14,7 +14,6 @@
 static inline gVertex *gVertexNew(size_t id, void *valueAddr, size_t elemSize) {
     gVertex *newVex = malloc(sizeof(gVertex));
     newVex->id= id;
-    newVex->adj = NULL;
     newVex->data = malloc(elemSize);
     memcpy(newVex->data, valueAddr, elemSize);
     return newVex;
@@ -22,30 +21,41 @@ static inline gVertex *gVertexNew(size_t id, void *valueAddr, size_t elemSize) {
 
 static void freeVertex(void * vp) {
     gVertex *v = *(gVertex**) vp;
-    adj_list *adj = v->adj;
+    /*adj_list *adj = v->adj;
     adj_list *trash;
     while (adj != NULL) {
         trash = adj;
         adj = adj->next;
         free(trash);
-    }
+    }*/
     free(v);
 }
 
-static void freeEdge(void *vp) {
-    gEdge *e = *(gEdge **) vp;
-    free(e);
+//static void freeEdge(void *vp) {
+//    gEdge *e = *(gEdge **) vp;
+//    free(e);
+//}
+
+static void freeAdjList(void *vp) {
+    adj_list *trash;
+    adj_list *adj = *(adj_list**) vp;
+    while(adj != NULL) {
+        trash = adj;
+        adj = adj->next;
+        free(trash);
+    }
 }
 
 void graphInit(graph* this, size_t elemSize, FreeFunction freeFn) {
     this->vex_lst = NULL;
     this->vex_map = NULL;
-    this->edge_lst = NULL;
+//    this->edge_lst = NULL;
     this->num_vex = 0;
     this->num_edge = 0;
     this->elemSize = elemSize;
     this->freeFn = freeFn;
     this->adj_mat = NULL;
+    this->adj_lst = NULL;
 }
 
 void graphDestroy(graph *this) {
@@ -54,11 +64,11 @@ void graphDestroy(graph *this) {
         free(this->vex_lst);
         this->vex_lst = NULL;
     }
-    if (this->edge_lst != NULL) {
-        vectorDestroy(this->edge_lst);
-        free(this->edge_lst);
-        this->edge_lst = NULL;
-    }
+//    if (this->edge_lst != NULL) {
+//        vectorDestroy(this->edge_lst);
+//        free(this->edge_lst);
+//        this->edge_lst = NULL;
+//    }
     if (this->vex_map != NULL) {
         hashmapDestroy(this->vex_map);
         free(this->vex_map);
@@ -68,6 +78,12 @@ void graphDestroy(graph *this) {
         free(this->adj_mat);
         this->adj_mat = NULL;
     }
+
+    if (this->adj_lst != NULL) {
+        vectorDestroy(this->adj_lst);
+        free(this->adj_lst);
+        this->adj_lst = NULL;
+    }
 }
 
 void graphPrepareMatrix(graph *this) {
@@ -75,50 +91,32 @@ void graphPrepareMatrix(graph *this) {
         free(this->adj_mat);
 
     // Allocate adjacent matrix
-    size_t r = this->num_vex;
-    size_t c = this->num_vex;
-    this->adj_mat = malloc(r * c * sizeof(double));
+    this->adj_mat = malloc(this->num_vex * this->num_vex * sizeof(double));
     double *ptr = this->adj_mat;
-    for (size_t i = 0; i < r; ++i) {
-        for (size_t j = 0; j < c; ++j)
+    for (size_t i = 0; i < this->num_vex; ++i) {
+        for (size_t j = 0; j < this->num_vex; ++j)
             *ptr++ = NAN;
     }
 
     // Create adjacent matrix and adjacent list
+    size_t srcIdx;
     size_t dstIdx;
-    gVertex *vex;
-    adj_list *adjLst;
+    gVertex *srcVex;
+    adj_list *srcAdj;
 
-    for (size_t i = 0; i < this->vex_lst->size; ++i) {
-        vectorGet(this->vex_lst, i, &vex);
-        adjLst = vex->adj;
-        while (adjLst != NULL) {
-            hashmapGet(this->vex_map, &adjLst->id, &dstIdx, REF_LONGLONG(-1));
+    for (srcIdx = 0; srcIdx < this->num_vex; ++srcIdx) {
+        vectorGet(this->vex_lst, srcIdx, &srcVex);
+        vectorGet(this->adj_lst, srcIdx, &srcAdj);
+        while (srcAdj != NULL) {
+            hashmapGet(this->vex_map, &srcAdj->id, &dstIdx, REF_LONGLONG(-1));
             if (dstIdx == -1) {
-                fprintf(stderr, "error: graph has invalid vertex-%zu\n", adjLst->id);
+                fprintf(stderr, "error: graph has invalid vertex-%zu\n",srcAdj->id);
                 exit(-1);
             }
-            this->adj_mat[i * this->num_vex + dstIdx] = adjLst->weight;
-            adjLst = adjLst->next;
+            this->adj_mat[srcIdx * this->num_vex + dstIdx] = srcAdj->weight;
+            srcAdj = srcAdj->next;
         }
     }
-    /*
-    size_t fIdx, tIdx;
-    gEdge *edge;
-    for (size_t i = 0; i < this->num_edge; ++i) {
-        vectorGet(this->edge_lst, i, &edge);
-        hashmapGet(this->vex_map, &edge->fromId, &fIdx, REF_LONGLONG(-1));
-        hashmapGet(this->vex_map, &edge->toId, &tIdx, REF_LONGLONG(-1));
-        if (fIdx == -1) {
-            fprintf(stderr, "error: graph has invalid vertex-%zu\n", fIdx);
-            exit(-1);
-        }
-        if (tIdx == -1) {
-            fprintf(stderr, "error: graph has invalid vertex-%zu\n", tIdx);
-            exit(-1);
-        }
-        ptr[fIdx * c + tIdx] = edge->weight;
-    }*/
 }
 
 void graphPrint(graph *this) {
@@ -161,6 +159,10 @@ void graphAddVertex(graph *this, size_t vexId, void *valueAddr) {
                     hashLong, LongEqual, NULL, NULL);
 #endif
     }
+    if (this->adj_lst == NULL) {
+        this->adj_lst = malloc(sizeof(vector));
+        vectorInit(this->adj_lst, sizeof(adj_list*), 0, freeAdjList);
+    }
 
     // if vexId exist
     size_t existIdx;
@@ -178,19 +180,15 @@ void graphAddVertex(graph *this, size_t vexId, void *valueAddr) {
         vectorPushBack(this->vex_lst, &vex);
         hashmapSet(this->vex_map, &vexId, &this->num_vex);
         ++this->num_vex;
+
+        adj_list *emptyAdj = NULL;
+        vectorPushBack(this->adj_lst, &emptyAdj);
     }
 }
 
 void graphAddEdge(graph *this, size_t srcIdx, size_t dstIdx, double weight) {
-    if (this->edge_lst == NULL) {
-        this->edge_lst = malloc(sizeof(vector));
-        vectorInit(this->edge_lst, sizeof(gEdge*), 0, freeEdge);
-    }
-
     size_t fIdx, tIdx;
-    gEdge *newEdge;
-    gVertex *srcVex;
-    adj_list *newAdj;
+    adj_list *srcVexAdj;
 
     // check node validity
     hashmapGet(this->vex_map, &srcIdx, &fIdx, REF_LONGLONG(-1));
@@ -203,20 +201,13 @@ void graphAddEdge(graph *this, size_t srcIdx, size_t dstIdx, double weight) {
         fprintf(stderr, "error: graph has invalid vertex-%zu\n", tIdx);
         exit(-1);
     }
-
-    // add edge to list
-    newEdge = malloc(sizeof(gEdge));
-    newEdge->fromId = srcIdx;
-    newEdge->toId = dstIdx;
-    newEdge->weight = weight;
-    vectorPushBack(this->edge_lst, &newEdge);
     ++this->num_edge;
 
-    // Add dstIdx to srcNode's adjList
-    vectorGet(this->vex_lst, fIdx, &srcVex);
-    newAdj = malloc(sizeof(adj_list));
+    // add to adj_list
+    vectorGet(this->adj_lst, fIdx, &srcVexAdj);
+    adj_list *newAdj = malloc(sizeof(adj_list));
     newAdj->id = dstIdx;
+    newAdj->next = srcVexAdj;
     newAdj->weight = weight;
-    newAdj->next = srcVex->adj;
-    srcVex->adj = newAdj;
+    vectorSet(this->adj_lst, fIdx, &newAdj);
 }

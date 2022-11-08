@@ -11,6 +11,7 @@ long long tmp_longlong;
 float tmp_float;
 double tmp_double;
 char *tmp_string;
+void *tmp_nan;
 
 
 void __swap(void *a, void *b, const size_t elemSize) {

@@ -1,12 +1,11 @@
 //
 // Created by chris on 2022/10/23.
 //
-#include "vector.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include "vector.h"
 
 static inline void vectorAutoGrow(vector *this) {
     this->capacity = this->capacity == 0 ? 1 : 2 * this->capacity;
@@ -93,8 +92,6 @@ void vectorGet(vector *this, size_t index, void *valueAddr) {
 void vectorSet(vector *this, size_t index, void *valueAddr) {
     assert(index < this->size);
     void *target = (char*) this->data + index * this->elemSize;
-    if (this->freeFn)
-        this->freeFn(target);
     memcpy(target, valueAddr, this->elemSize);
 }
 

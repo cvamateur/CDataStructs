@@ -8,36 +8,29 @@
 #include "common.h"
 typedef struct __Vector vector;
 typedef struct __HashMap hashmap;
-typedef struct __AdjList adj_list;
+typedef struct __AdjNode adj_list;
 
 typedef struct __GNode {
     size_t id;
     void *data;
-    adj_list *adj;
 } gVertex;
 
-typedef struct __Edge {
-    size_t fromId;
-    size_t toId;
-    double weight;
-} gEdge;
-
-
-typedef struct __AdjList {
+typedef struct __AdjNode {
     size_t id;      // outgoing node
     double weight;
     adj_list *next;
 } adj_list;
 
 typedef struct __Graph {
-    vector *vex_lst;
-    vector *edge_lst;
-    hashmap *vex_map;
+    vector *vex_lst;     // Array of vertexes
+    hashmap *vex_map;    // Mapping from vexId to vexIdx in vex_lst
 
     size_t elemSize;
     size_t num_vex;
     size_t num_edge;
-    double *adj_mat;
+
+    double *adj_mat;    // Adjacent Matrix
+    vector *adj_lst;    // Adjacent List
 
     FreeFunction freeFn;
 } graph;
