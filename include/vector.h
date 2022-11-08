@@ -71,6 +71,10 @@ void vectorInsert(vector *this, void *valueAddr, size_t index);
 
 void vectorDelete(vector *this, size_t index);
 
+void vectorGet(vector *this, size_t index, void *valueAddr);
+
+void vectorSet(vector *this, size_t index, void *valueAddr);
+
 void vectorReplace(vector *this, void *valueAddr, size_t index);
 
 void vectorSort(vector *this, CompareFunction cmpFn);

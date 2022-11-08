@@ -84,6 +84,20 @@ void vectorDelete(vector *this, size_t index) {
     --this->size;
 }
 
+void vectorGet(vector *this, size_t index, void *valueAddr) {
+    assert(index < this->size);
+    void *source = (char*) this->data + index * this->elemSize;
+    memcpy(valueAddr, source, this->elemSize);
+}
+
+void vectorSet(vector *this, size_t index, void *valueAddr) {
+    assert(index < this->size);
+    void *target = (char*) this->data + index * this->elemSize;
+    if (this->freeFn)
+        this->freeFn(target);
+    memcpy(target, valueAddr, this->elemSize);
+}
+
 void vectorReplace(vector *this, void *valueAddr, size_t index) {
     void *target = (char *) this->data + index * this->elemSize;
     if (this->freeFn != NULL)

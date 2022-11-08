@@ -41,9 +41,9 @@ static inline void hashMapAutoGrow(hashmap *this) {
         this->size < (size_t) (FILL_RATIO * (double) this->capacity))
         return;
     this->capacity *= 2;
-    hashmapNode **newData = malloc(this->capacity * sizeof(hashmapNode*));
+    hashmapNode **newData = malloc(this->capacity * sizeof(hashmapNode *));
     assert(newData != NULL);
-    memset(newData, 0, this->capacity * sizeof(hashmapNode*));
+    memset(newData, 0, this->capacity * sizeof(hashmapNode *));
     this->_a = randint(1, PRIME_NUM - 1);
 
     hashmapNode *item = NULL;
@@ -107,7 +107,7 @@ void hashmapSet(hashmap *this, void *keyAddr, void *valueAddr) {
         if (item == NULL) {
             hashmapNode *newNode = malloc(sizeof(hashmapNode));
             assert(newNode != NULL);
-            hashNodeInit(newNode,  keyAddr, this->keySize, valueAddr, this->valueSize);
+            hashNodeInit(newNode, keyAddr, this->keySize, valueAddr, this->valueSize);
             newNode->next = this->data[hashCode];
             this->data[hashCode] = newNode;
         }
@@ -158,30 +158,87 @@ void hashmapPop(hashmap *this, void *keyAddr, void *outputAddr, void *defaultVal
     memcpy(outputAddr, defaultValue, this->valueSize);
 }
 
-
-size_t hashInt(const void* keyAddr) {
-    return (size_t) *(int*)keyAddr;
+int hashmapContain(hashmap *this, void *keyAddr) {
+    if (this->data != NULL) {
+        size_t hashCode = HASH(this, keyAddr);
+        hashmapNode *found = this->data[hashCode];
+        while (found != NULL) {
+            pair *item = found->p_item;
+            if (this->keyEqual(keyAddr, item->p_key))
+                return 1;
+            found = found->next;
+        }
+    }
+    return 0;
 }
 
-size_t hashDouble(const void* keyAddr) {
-    return (size_t) *(double*)keyAddr;
+size_t hashChar(const void *keyAddr) {
+    return (size_t) *(char *) keyAddr;
 }
 
-size_t  hashString(const void* keyAddr) {
+size_t hashShort(const void *keyAddr) {
+    return (size_t) *(short *) keyAddr;
+}
+
+size_t hashInt(const void *keyAddr) {
+    return (size_t) *(int *) keyAddr;
+}
+
+size_t hashLong(const void *keyAddr) {
+    return (size_t) *(long *) keyAddr;
+}
+
+size_t hashLongLong(const void *keyAddr) {
+    return (size_t) *(long long *) keyAddr;
+}
+
+size_t hashFloat(const void *keyAddr) {
+    return (size_t) *(float *) keyAddr;
+}
+
+size_t hashDouble(const void *keyAddr) {
+    return (size_t) *(double *) keyAddr;
+}
+
+size_t hashString(const void *keyAddr) {
     size_t r = 0;
-    char* key = *(char**) keyAddr;
+    char *key = *(char **) keyAddr;
     for (int i = 0; i < strlen(key); ++i) {
         r += (size_t) key[i];
     }
     return r;
 }
 
+int CharEqual(const void *vp1, const void *vp2) {
+    return *(char *) vp1 == *(char *) vp2;
+}
+
+int ShortEqual(const void *vp1, const void *vp2) {
+    return *(short *) vp1 == *(short *) vp2;
+}
+
 int IntEqual(const void *vp1, const void *vp2) {
     return *(int *) vp1 == *(int *) vp2;
+}
+
+int LongEqual(const void *vp1, const void *vp2) {
+    return *(long *) vp1 == *(long *) vp2;
+}
+
+int LongLongEqual(const void *vp1, const void *vp2) {
+    return *(long long *) vp1 == *(long long *) vp2;
+}
+
+int FloatEqual(const void *vp1, const void *vp2) {
+    return *(float *) vp1 == *(float *) vp2;
+}
+
+int DoubleEqual(const void *vp1, const void *vp2) {
+    return *(double *) vp1 == *(double *) vp2;
 }
 
 int StringEqual(const void *vp1, const void *vp2) {
     char *key = *(char **) vp1;
     char *check = *(char **) vp2;
-    return (int) strcmp(key, check) == 0;
+    return (strcmp(key, check) == 0);
 }
