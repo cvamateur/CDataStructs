@@ -8,10 +8,12 @@
 #include "common.h"
 typedef struct __Vector vector;
 typedef struct __HashMap hashmap;
+typedef struct __AdjList adj_list;
+
 typedef struct __GNode {
     size_t id;
     void *data;
-    struct __GNode *next;
+    adj_list *adj;
 } gVertex;
 
 typedef struct __Edge {
@@ -19,6 +21,13 @@ typedef struct __Edge {
     size_t toId;
     double weight;
 } gEdge;
+
+
+typedef struct __AdjList {
+    size_t id;      // outgoing node
+    double weight;
+    adj_list *next;
+} adj_list;
 
 typedef struct __Graph {
     vector *vex_lst;
@@ -36,7 +45,7 @@ typedef struct __Graph {
 
 void graphInit(graph* this, size_t elemSize, FreeFunction freeFn);
 void graphDestroy(graph *this);
-void graphPrepare(graph *this);
+void graphPrepareMatrix(graph *this);
 void graphPrint(graph *this);
 void graphAddVertex(graph *this, size_t vexId, void *valueAddr);
 void graphAddEdge(graph *this, size_t srcIdx, size_t dstIdx, double weight);
