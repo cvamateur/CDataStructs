@@ -21,20 +21,8 @@ static inline gVertex *gVertexNew(size_t id, void *valueAddr, size_t elemSize) {
 
 static void freeVertex(void * vp) {
     gVertex *v = *(gVertex**) vp;
-    /*adj_list *adj = v->adj;
-    adj_list *trash;
-    while (adj != NULL) {
-        trash = adj;
-        adj = adj->next;
-        free(trash);
-    }*/
     free(v);
 }
-
-//static void freeEdge(void *vp) {
-//    gEdge *e = *(gEdge **) vp;
-//    free(e);
-//}
 
 static void freeAdjList(void *vp) {
     adj_list *trash;
@@ -49,7 +37,6 @@ static void freeAdjList(void *vp) {
 void graphInit(graph* this, size_t elemSize, FreeFunction freeFn) {
     this->vex_lst = NULL;
     this->vex_map = NULL;
-//    this->edge_lst = NULL;
     this->num_vex = 0;
     this->num_edge = 0;
     this->elemSize = elemSize;
@@ -64,11 +51,6 @@ void graphDestroy(graph *this) {
         free(this->vex_lst);
         this->vex_lst = NULL;
     }
-//    if (this->edge_lst != NULL) {
-//        vectorDestroy(this->edge_lst);
-//        free(this->edge_lst);
-//        this->edge_lst = NULL;
-//    }
     if (this->vex_map != NULL) {
         hashmapDestroy(this->vex_map);
         free(this->vex_map);
@@ -103,7 +85,6 @@ void graphPrepareMatrix(graph *this) {
     size_t dstIdx;
     gVertex *srcVex;
     adj_list *srcAdj;
-
     for (srcIdx = 0; srcIdx < this->num_vex; ++srcIdx) {
         vectorGet(this->vex_lst, srcIdx, &srcVex);
         vectorGet(this->adj_lst, srcIdx, &srcAdj);
@@ -126,7 +107,6 @@ void graphPrint(graph *this) {
     gVertex *srcNode;
     gVertex *dstNode;
     double weight;
-
     if (this->adj_mat != NULL) {
         for (size_t i = 0; i < this->num_vex; ++i) {
             vectorGet(this->vex_lst, i, &srcNode);
@@ -179,10 +159,9 @@ void graphAddVertex(graph *this, size_t vexId, void *valueAddr) {
         vex = gVertexNew(vexId, valueAddr, this->elemSize);
         vectorPushBack(this->vex_lst, &vex);
         hashmapSet(this->vex_map, &vexId, &this->num_vex);
-        ++this->num_vex;
-
         adj_list *emptyAdj = NULL;
         vectorPushBack(this->adj_lst, &emptyAdj);
+        ++this->num_vex;
     }
 }
 
