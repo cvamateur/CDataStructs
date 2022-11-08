@@ -42,6 +42,6 @@ void graphPrepareMatrix(graph *this);
 void graphPrint(graph *this);
 void graphAddVertex(graph *this, size_t vexId, void *valueAddr);
 void graphAddEdge(graph *this, size_t srcIdx, size_t dstIdx, double weight);
-
+void graphDFS(graph *this, MapFunction mapFn, void *auxData);
 
 #endif //CDATASTRUCTS_GRAPH_H

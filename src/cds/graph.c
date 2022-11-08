@@ -13,28 +13,44 @@
 
 static inline gVertex *gVertexNew(size_t id, void *valueAddr, size_t elemSize) {
     gVertex *newVex = malloc(sizeof(gVertex));
-    newVex->id= id;
+    newVex->id = id;
     newVex->data = malloc(elemSize);
     memcpy(newVex->data, valueAddr, elemSize);
     return newVex;
 }
 
-static void freeVertex(void * vp) {
-    gVertex *v = *(gVertex**) vp;
+static void freeVertex(void *vp) {
+    gVertex *v = *(gVertex **) vp;
     free(v);
 }
 
 static void freeAdjList(void *vp) {
     adj_list *trash;
-    adj_list *adj = *(adj_list**) vp;
-    while(adj != NULL) {
+    adj_list *adj = *(adj_list **) vp;
+    while (adj != NULL) {
         trash = adj;
         adj = adj->next;
         free(trash);
     }
 }
 
-void graphInit(graph* this, size_t elemSize, FreeFunction freeFn) {
+static void MapAdjacentMatrix(void *vp, size_t srcIdx, void *auxData) {
+    adj_list *adj;
+    size_t dstIdx;
+    graph *g = auxData;
+    vectorGet(g->adj_lst, srcIdx, &adj);
+    while (adj != NULL) {
+        hashmapGet(g->vex_map, &adj->id, &dstIdx, REF_LONGLONG(-1));
+        if (dstIdx == -1) {
+            fprintf(stderr, "error: graph has invalid vertex-%zu\n", adj->id);
+            exit(-1);
+        }
+        g->adj_mat[srcIdx * g->num_vex + dstIdx] = adj->weight;
+        adj = adj->next;
+    }
+}
+
+void graphInit(graph *this, size_t elemSize, FreeFunction freeFn) {
     this->vex_lst = NULL;
     this->vex_map = NULL;
     this->num_vex = 0;
@@ -60,7 +76,6 @@ void graphDestroy(graph *this) {
         free(this->adj_mat);
         this->adj_mat = NULL;
     }
-
     if (this->adj_lst != NULL) {
         vectorDestroy(this->adj_lst);
         free(this->adj_lst);
@@ -81,23 +96,7 @@ void graphPrepareMatrix(graph *this) {
     }
 
     // Create adjacent matrix and adjacent list
-    size_t srcIdx;
-    size_t dstIdx;
-    gVertex *srcVex;
-    adj_list *srcAdj;
-    for (srcIdx = 0; srcIdx < this->num_vex; ++srcIdx) {
-        vectorGet(this->vex_lst, srcIdx, &srcVex);
-        vectorGet(this->adj_lst, srcIdx, &srcAdj);
-        while (srcAdj != NULL) {
-            hashmapGet(this->vex_map, &srcAdj->id, &dstIdx, REF_LONGLONG(-1));
-            if (dstIdx == -1) {
-                fprintf(stderr, "error: graph has invalid vertex-%zu\n",srcAdj->id);
-                exit(-1);
-            }
-            this->adj_mat[srcIdx * this->num_vex + dstIdx] = srcAdj->weight;
-            srcAdj = srcAdj->next;
-        }
-    }
+    vectorMap2(this->vex_lst, MapAdjacentMatrix, this);
 }
 
 void graphPrint(graph *this) {
@@ -126,7 +125,7 @@ void graphPrint(graph *this) {
 void graphAddVertex(graph *this, size_t vexId, void *valueAddr) {
     if (this->vex_lst == NULL) {
         this->vex_lst = malloc(sizeof(vector));
-        vectorInit(this->vex_lst, sizeof(gVertex*), 0, freeVertex);
+        vectorInit(this->vex_lst, sizeof(gVertex *), 0, freeVertex);
     }
     if (this->vex_map == NULL) {
         this->vex_map = malloc(sizeof(hashmap));
@@ -141,7 +140,7 @@ void graphAddVertex(graph *this, size_t vexId, void *valueAddr) {
     }
     if (this->adj_lst == NULL) {
         this->adj_lst = malloc(sizeof(vector));
-        vectorInit(this->adj_lst, sizeof(adj_list*), 0, freeAdjList);
+        vectorInit(this->adj_lst, sizeof(adj_list *), 0, freeAdjList);
     }
 
     // if vexId exist
@@ -154,7 +153,7 @@ void graphAddVertex(graph *this, size_t vexId, void *valueAddr) {
             this->freeFn(vex->data);
         memcpy(vex->data, valueAddr, this->elemSize);
 
-    // vexId is new
+        // vexId is new
     } else {
         vex = gVertexNew(vexId, valueAddr, this->elemSize);
         vectorPushBack(this->vex_lst, &vex);
@@ -180,7 +179,6 @@ void graphAddEdge(graph *this, size_t srcIdx, size_t dstIdx, double weight) {
         fprintf(stderr, "error: graph has invalid vertex-%zu\n", tIdx);
         exit(-1);
     }
-    ++this->num_edge;
 
     // add to adj_list
     vectorGet(this->adj_lst, fIdx, &srcVexAdj);
@@ -189,4 +187,13 @@ void graphAddEdge(graph *this, size_t srcIdx, size_t dstIdx, double weight) {
     newAdj->next = srcVexAdj;
     newAdj->weight = weight;
     vectorSet(this->adj_lst, fIdx, &newAdj);
+
+    ++this->num_edge;
+}
+
+static void DFS_helper(gVertex *vex, size_t idx, MapFunction mapFn, void *auxData);
+
+
+void graphDFS(graph *this, MapFunction mapFn, void *auxData) {
+
 }

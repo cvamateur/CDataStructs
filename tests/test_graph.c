@@ -6,7 +6,6 @@
 
 int main() {
     graph g;
-
     graphInit(&g, sizeof(double), NULL);
 
     graphAddVertex(&g, 1, REF_DOUBLE(10));

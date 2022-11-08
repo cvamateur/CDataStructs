@@ -144,3 +144,11 @@ void vectorMap(vector *this, MapFunction mapFn, void *auxData) {
         mapFn(elemAddr, auxData);
     }
 }
+
+void vectorMap2(vector *this, MapFunction2 mapFn, void *auxData) {
+    void *elemAddr;
+    for (size_t i = 0; i < this->size; ++i) {
+        elemAddr = (char*) this->data + i * this->elemSize;
+        mapFn(elemAddr, i, auxData);
+    }
+}

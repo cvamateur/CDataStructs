@@ -35,6 +35,7 @@ typedef int (*CompareFunction)(const void *elemAddr1, const void *elemAddr2);
 typedef void (*PrintFunction)(const void *elemAddr);
 typedef void (*FreeFunction)(void *elemAddr);
 typedef void (*MapFunction)(void *elemAddr, void *auxData);
+typedef void (*MapFunction2)(void *elemAddr, size_t idx, void *auxData);
 
 #define swap(a, b)              (__swap(&(a), &(b), sizeof(a)))
 #define memswap(a, b, s)        (__swap(a, b, s))

@@ -82,5 +82,6 @@ void vectorSort(vector *this, CompareFunction cmpFn);
 long vectorSearch(const vector *this, const void *key, CompareFunction cmpFn, size_t startIdx, int isSorted);
 
 void vectorMap(vector *this, MapFunction mapFn, void *auxData);
+void vectorMap2(vector *this, MapFunction2 mapFn, void *auxData);
 
 #endif //CDATASTRUCTS_VECTOR_H
